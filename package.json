@@ -1,0 +1,127 @@
+{
+  "name": "driverelay",
+  "productName": "DriveRelay",
+  "version": "1.0.0",
+  "description": "Download manager with automatic Google Drive download \u2192 upload relay",
+  "main": "src/main/main.js",
+  "author": "Mahir Shahriar",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.js",
+    "icons": "node scripts/make-icons.js",
+    "ext": "node scripts/build-extension.js",
+    "dist:win": "npm run ext && electron-builder --win --x64 --publish never",
+    "dist:mac": "npm run ext && electron-builder --mac --publish never",
+    "dist:linux": "npm run ext && electron-builder --linux --publish never"
+  },
+  "devDependencies": {
+    "electron": "^42.11.12",
+    "electron-builder": "^26.16.1"
+  },
+  "build": {
+    "appId": "com.driverelay.app",
+    "productName": "DriveRelay",
+    "copyright": "Copyright \u00a9 2026 Mahir Shahriar",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "package.json",
+      "!**/*.map"
+    ],
+    "extraResources": [
+      {
+        "from": "dist-extension",
+        "to": "extension",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "DriveRelay",
+      "artifactName": "${productName}-Setup-${version}-win-${arch}.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-Portable-${version}-win-${arch}.${ext}"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png",
+      "category": "public.app-category.productivity",
+      "identity": "-",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "artifactName": "${productName}-${version}-mac-${arch}.${ext}"
+    },
+    "dmg": {
+      "title": "DriveRelay ${version}",
+      "contents": [
+        {
+          "x": 140,
+          "y": 200
+        },
+        {
+          "x": 400,
+          "y": 200,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "window": {
+        "width": 540,
+        "height": 380
+      }
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Network",
+      "icon": "build/icon.png",
+      "artifactName": "${productName}-${version}-linux-${arch}.${ext}"
+    }
+  }
+}

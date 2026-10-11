@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>DriveRelay options</title>
+    <style>
+      body {
+        font: 14px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        max-width: 560px;
+        margin: 24px auto;
+        padding: 0 16px;
+        color: #18203a;
+      }
+      label {
+        display: block;
+        margin: 14px 0 4px;
+        font-weight: 600;
+      }
+      input[type='number'],
+      textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        border: 1px solid #cbd2e1;
+        border-radius: 8px;
+        font: inherit;
+      }
+      .check {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-weight: 400;
+      }
+      button {
+        margin-top: 16px;
+        padding: 8px 16px;
+        border: 0;
+        border-radius: 8px;
+        background: #4f8cff;
+        color: #fff;
+        font: inherit;
+        cursor: pointer;
+      }
+      .muted {
+        color: #66708f;
+        font-size: 13px;
+      }
+      #saved {
+        margin-left: 10px;
+        color: #16a34a;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>DriveRelay extension</h2>
+    <p class="muted">Size and file-type filters are configured inside the DriveRelay app (Settings → Browser integration).</p>
+    <label class="check"><input type="checkbox" id="enabled" /> Capture browser downloads</label>
+    <label for="port">App bridge port</label>
+    <input type="number" id="port" min="1024" max="65535" />
+    <p class="muted">Must match the port shown in the app (default 6801).</p>
+    <label for="skip">Never capture downloads from these sites</label>
+    <textarea id="skip" rows="4" placeholder="example.com&#10;mail.google.com"></textarea>
+    <button id="perm">Grant access to all sites (needed on Firefox for cookies)</button>
+    <br />
+    <button id="save">Save</button><span id="saved"></span>
+    <script src="options.js"></script>
+  </body>
+</html>

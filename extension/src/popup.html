@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <img src="icons/icon48.png" alt="" />
+      <div>
+        <div class="title">DriveRelay</div>
+        <div class="status"><span class="dot" id="dot"></span><span id="status">Checking…</span></div>
+      </div>
+    </header>
+
+    <label class="switch">
+      <input type="checkbox" id="enabled" />
+      <span>Capture browser downloads</span>
+    </label>
+
+    <div class="block">
+      <input id="url" placeholder="Paste a link to download…" />
+      <div class="row">
+        <button id="btn-dl" class="primary">Download</button>
+        <button id="btn-relay" title="Download, then upload to Google Drive">Relay to Drive</button>
+      </div>
+    </div>
+
+    <div class="block" id="drive-block" hidden>
+      <div class="hint">This tab is a Google Drive page.</div>
+      <button id="btn-relay-tab" class="primary wide">Relay this Drive link</button>
+    </div>
+
+    <div class="row">
+      <button id="btn-all" class="wide">Download all file links on page</button>
+    </div>
+    <div class="row">
+      <button id="btn-open" class="wide">Open DriveRelay</button>
+    </div>
+
+    <div class="msg" id="msg"></div>
+    <footer><a href="#" id="opts">Options</a></footer>
+    <script src="popup.js"></script>
+  </body>
+</html>

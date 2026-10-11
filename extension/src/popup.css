@@ -1,0 +1,129 @@
+:root {
+  color-scheme: dark;
+}
+body {
+  box-sizing: border-box;
+  width: 320px;
+  margin: 0;
+  padding: 14px;
+  background: #0b1020;
+  color: #e6eaf5;
+  font: 13px/1.4 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+header img {
+  width: 36px;
+  height: 36px;
+}
+.title {
+  font-weight: 700;
+  font-size: 15px;
+}
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #8d97b8;
+  font-size: 12px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #6b7280;
+}
+.dot.on {
+  background: #22c55e;
+}
+.dot.off {
+  background: #ef4444;
+}
+.switch {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px;
+  background: #121a36;
+  border: 1px solid #243058;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.switch input {
+  accent-color: #4f8cff;
+  width: 16px;
+  height: 16px;
+}
+.block {
+  margin-top: 10px;
+  padding: 10px;
+  background: #121a36;
+  border: 1px solid #243058;
+  border-radius: 10px;
+}
+input#url {
+  width: 100%;
+  box-sizing: border-box;
+  background: #0f1630;
+  border: 1px solid #243058;
+  border-radius: 8px;
+  color: inherit;
+  padding: 8px 10px;
+  outline: none;
+}
+input#url:focus {
+  border-color: #4f8cff;
+}
+.row {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+button {
+  flex: 1;
+  background: #172045;
+  color: inherit;
+  border: 1px solid #243058;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+  cursor: pointer;
+}
+button:hover {
+  border-color: #4f8cff;
+}
+button.primary {
+  background: linear-gradient(135deg, #4f8cff, #7c5cff);
+  border-color: transparent;
+  color: #fff;
+}
+button.wide {
+  width: 100%;
+}
+.hint {
+  color: #8d97b8;
+  margin-bottom: 6px;
+}
+.msg {
+  margin-top: 10px;
+  min-height: 16px;
+  color: #8d97b8;
+}
+.msg.err {
+  color: #ef4444;
+}
+.msg.ok {
+  color: #22c55e;
+}
+footer {
+  margin-top: 6px;
+  text-align: right;
+}
+a {
+  color: #4f8cff;
+  text-decoration: none;
+}

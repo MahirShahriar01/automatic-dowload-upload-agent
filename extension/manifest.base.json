@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "DriveRelay Download Manager",
+  "short_name": "DriveRelay",
+  "version": "1.0.0",
+  "description": "Send browser downloads and Google Drive links to the DriveRelay desktop app (multi-connection downloads + Drive relay).",
+  "icons": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "permissions": ["downloads", "contextMenus", "storage", "cookies", "notifications", "scripting", "activeTab", "tabs", "alarms"],
+  "host_permissions": ["<all_urls>", "http://127.0.0.1/*"],
+  "action": { "default_popup": "popup.html", "default_title": "DriveRelay", "default_icon": { "16": "icons/icon16.png", "32": "icons/icon32.png" } },
+  "options_ui": { "page": "options.html", "open_in_tab": true }
+}

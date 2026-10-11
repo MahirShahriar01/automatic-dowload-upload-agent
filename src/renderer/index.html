@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DriveRelay</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand drag">
+          <img src="assets/icon.png" alt="" class="brand-logo" />
+          <div>
+            <div class="brand-name">DriveRelay</div>
+            <div class="brand-sub">Download manager</div>
+          </div>
+        </div>
+        <nav class="nav">
+          <button class="nav-item active" data-page="downloads">
+            <span class="ico" data-icon="download"></span><span>Downloads</span><span class="badge" id="badge-downloads"></span>
+          </button>
+          <button class="nav-item" data-page="relay">
+            <span class="ico" data-icon="relay"></span><span>Drive Relay</span><span class="badge" id="badge-relay"></span>
+          </button>
+          <button class="nav-item" data-page="accounts">
+            <span class="ico" data-icon="user"></span><span>Google Accounts</span><span class="badge warn" id="badge-accounts"></span>
+          </button>
+          <button class="nav-item" data-page="extension">
+            <span class="ico" data-icon="puzzle"></span><span>Browser Extension</span><span class="dot" id="dot-ext"></span>
+          </button>
+          <button class="nav-item" data-page="settings">
+            <span class="ico" data-icon="settings"></span><span>Settings</span>
+          </button>
+        </nav>
+        <div class="sidebar-foot">
+          <div class="rate"><span class="ico sm" data-icon="arrowDown"></span><span id="rate-down">0 B/s</span></div>
+          <div class="rate"><span class="ico sm" data-icon="arrowUp"></span><span id="rate-up">0 B/s</span></div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <!-- ============================ DOWNLOADS ============================ -->
+        <section class="page active" id="page-downloads">
+          <header class="page-head drag">
+            <div>
+              <h1>Downloads</h1>
+              <p class="muted">Multi-connection, resumable downloads. Paste any link or Google Drive link.</p>
+            </div>
+            <div class="actions no-drag">
+              <button class="btn primary" id="btn-add"><span class="ico sm" data-icon="plus"></span>Add URL</button>
+            </div>
+          </header>
+          <div class="toolbar">
+            <div class="chips" id="dl-filter">
+              <button class="chip active" data-filter="all">All</button>
+              <button class="chip" data-filter="active">Active</button>
+              <button class="chip" data-filter="completed">Completed</button>
+              <button class="chip" data-filter="failed">Failed</button>
+            </div>
+            <div class="spacer"></div>
+            <input class="input search" id="dl-search" placeholder="Search…" />
+            <button class="btn ghost" id="btn-resume-all" title="Resume all"><span class="ico sm" data-icon="play"></span>Resume all</button>
+            <button class="btn ghost" id="btn-pause-all" title="Pause all"><span class="ico sm" data-icon="pause"></span>Pause all</button>
+            <button class="btn ghost" id="btn-clear" title="Clear finished"><span class="ico sm" data-icon="broom"></span>Clear finished</button>
+          </div>
+          <div class="list" id="dl-list"></div>
+          <div class="empty" id="dl-empty">
+            <div class="empty-art"><span class="ico xl" data-icon="download"></span></div>
+            <h3>No downloads yet</h3>
+            <p class="muted">Click <b>Add URL</b>, drop a link here, or let the browser extension send downloads automatically.</p>
+          </div>
+        </section>
+
+        <!-- ============================== RELAY ============================== -->
+        <section class="page" id="page-relay">
+          <header class="page-head drag">
+            <div>
+              <h1>Drive Relay</h1>
+              <p class="muted">Paste a Google Drive link → it downloads to your folder → uploads to another Drive folder automatically.</p>
+            </div>
+          </header>
+
+          <div class="card relay-form">
+            <div class="steps">
+              <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                  <label class="label">Source link <span class="pill" id="src-kind"></span></label>
+                  <div class="row">
+                    <input class="input grow" id="relay-source" placeholder="https://drive.google.com/file/d/…  or  /drive/folders/…  or any direct link" />
+                    <button class="btn ghost" id="relay-paste-src" title="Paste"><span class="ico sm" data-icon="clipboard"></span></button>
+                  </div>
+                </div>
+              </div>
+              <div class="step" id="step-local">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                  <label class="label">Download to folder</label>
+                  <div class="row">
+                    <input class="input grow" id="relay-local" readonly />
+                    <button class="btn ghost" id="relay-browse"><span class="ico sm" data-icon="folder"></span>Browse</button>
+                  </div>
+                </div>
+              </div>
+              <div class="step" id="step-dest">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                  <label class="label">Upload to Google Drive folder</label>
+                  <div class="row">
+                    <input class="input grow" id="relay-dest" placeholder="https://drive.google.com/drive/folders/…" />
+                    <button class="btn ghost" id="relay-paste-dest" title="Paste"><span class="ico sm" data-icon="clipboard"></span></button>
+                  </div>
+                  <div class="row small-gap">
+                    <label class="label inline">Upload as</label>
+                    <select class="input" id="relay-dest-account"></select>
+                    <label class="label inline">Read source as</label>
+                    <select class="input" id="relay-src-account"></select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="relay-options">
+              <div class="segmented" id="relay-mode">
+                <button data-mode="relay" class="active" title="Download to your computer, then upload to the destination folder">
+                  <span class="ico sm" data-icon="relay"></span>Download → Upload
+                </button>
+                <button data-mode="download" title="Only download to your computer"><span class="ico sm" data-icon="download"></span>Download only</button>
+                <button data-mode="copy" title="Copy directly inside Google Drive — nothing is downloaded (fastest)">
+                  <span class="ico sm" data-icon="cloud"></span>Cloud copy
+                </button>
+              </div>
+              <div class="checks">
+                <label class="check" id="opt-keep-wrap"><input type="checkbox" id="opt-keep" checked /> Keep local copy after upload</label>
+                <label class="check"><input type="checkbox" id="opt-skip" checked /> Skip files that already exist</label>
+                <label class="check"><input type="checkbox" id="opt-verify" checked /> Verify checksum</label>
+                <label class="check" id="opt-root-wrap"><input type="checkbox" id="opt-root" checked /> Create source folder in destination</label>
+              </div>
+              <div class="spacer"></div>
+              <button class="btn primary big" id="relay-start"><span class="ico sm" data-icon="rocket"></span>Start</button>
+            </div>
+            <div class="form-error" id="relay-error"></div>
+          </div>
+
+          <h2 class="section-title">Transfers</h2>
+          <div class="list" id="tr-list"></div>
+          <div class="empty small" id="tr-empty">
+            <p class="muted">No transfers yet. Fill the form above and press <b>Start</b>.</p>
+          </div>
+        </section>
+
+        <!-- ============================= ACCOUNTS ============================ -->
+        <section class="page" id="page-accounts">
+          <header class="page-head drag">
+            <div>
+              <h1>Google Accounts</h1>
+              <p class="muted">Needed to upload to Drive, read private files, and avoid public download limits.</p>
+            </div>
+            <div class="actions no-drag">
+              <button class="btn primary" id="btn-signin"><span class="ico sm" data-icon="plus"></span>Add Google account</button>
+            </div>
+          </header>
+          <div class="card warn-card" id="google-setup">
+            <h3><span class="ico sm" data-icon="key"></span> One-time setup: connect your own Google API client</h3>
+            <p class="muted">
+              Google requires every app that uploads to Drive to use an OAuth client. It is free and takes ~3 minutes.
+              <a href="#" id="link-guide">Open the step-by-step guide</a>.
+            </p>
+            <ol class="guide">
+              <li>Open <a href="#" data-ext="https://console.cloud.google.com/projectcreate">Google Cloud Console</a> and create a project.</li>
+              <li>Enable the <a href="#" data-ext="https://console.cloud.google.com/apis/library/drive.googleapis.com">Google Drive API</a>.</li>
+              <li>Configure the <a href="#" data-ext="https://console.cloud.google.com/auth/branding">OAuth consent screen</a> (External) and add your Gmail as a <b>test user</b>.</li>
+              <li>Create <a href="#" data-ext="https://console.cloud.google.com/auth/clients/create">OAuth client ID</a> → Application type <b>Desktop app</b> → Download JSON.</li>
+              <li>Click <b>Import JSON</b> below (or paste Client ID + Secret).</li>
+            </ol>
+            <div class="grid2">
+              <div><label class="label">Client ID</label><input class="input" id="g-client-id" placeholder="xxxx.apps.googleusercontent.com" /></div>
+              <div><label class="label">Client secret</label><input class="input" id="g-client-secret" type="password" placeholder="GOCSPX-…" /></div>
+            </div>
+            <div class="row">
+              <button class="btn" id="btn-import-json"><span class="ico sm" data-icon="file"></span>Import JSON…</button>
+              <button class="btn primary" id="btn-save-client">Save</button>
+              <span class="muted small" id="client-status"></span>
+            </div>
+          </div>
+          <div class="list" id="acc-list"></div>
+          <div class="empty small" id="acc-empty"><p class="muted">No Google account connected yet.</p></div>
+        </section>
+
+        <!-- ============================ EXTENSION ============================ -->
+        <section class="page" id="page-extension">
+          <header class="page-head drag">
+            <div>
+              <h1>Browser Extension</h1>
+              <p class="muted">Catch downloads from Chrome, Edge, Brave, Opera or Firefox and send them to DriveRelay.</p>
+            </div>
+          </header>
+          <div class="card">
+            <div class="status-line"><span class="dot big" id="ext-dot"></span><span id="ext-status">Checking…</span></div>
+            <p class="muted small" id="bridge-status"></p>
+          </div>
+          <div class="grid2">
+            <div class="card">
+              <h3><span class="ico sm" data-icon="chrome"></span> Chrome / Edge / Brave / Opera</h3>
+              <ol class="guide">
+                <li>Click <b>Show extension folder</b> below.</li>
+                <li>Open <code>chrome://extensions</code> (or <code>edge://extensions</code>).</li>
+                <li>Turn on <b>Developer mode</b> (top-right).</li>
+                <li>Click <b>Load unpacked</b> and select the <code>chromium</code> folder.</li>
+                <li>Pin the DriveRelay icon to the toolbar.</li>
+              </ol>
+            </div>
+            <div class="card">
+              <h3><span class="ico sm" data-icon="firefox"></span> Firefox</h3>
+              <ol class="guide">
+                <li>Click <b>Show extension folder</b> below.</li>
+                <li>Open <code>about:debugging#/runtime/this-firefox</code>.</li>
+                <li>Click <b>Load Temporary Add-on…</b></li>
+                <li>Select <code>firefox/manifest.json</code>.</li>
+                <li>For permanent install, use the signed <code>.xpi</code> (see README).</li>
+              </ol>
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn primary" id="btn-ext-folder"><span class="ico sm" data-icon="folder"></span>Show extension folder</button>
+          </div>
+          <div class="card">
+            <h3>What the extension does</h3>
+            <ul class="features">
+              <li>Automatically takes over browser downloads (files bigger than the minimum size) — falls back to the browser if the app is closed.</li>
+              <li>Right-click any link → <b>Download with DriveRelay</b>, or <b>Download all links</b> on a page.</li>
+              <li>On a Google Drive page → <b>Relay this Drive link</b> opens the relay form pre-filled.</li>
+              <li>Sends cookies + referrer so downloads that need your login keep working.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ============================= SETTINGS ============================ -->
+        <section class="page" id="page-settings">
+          <header class="page-head drag">
+            <div>
+              <h1>Settings</h1>
+              <p class="muted">Changes are saved automatically.</p>
+            </div>
+          </header>
+          <div class="card form">
+            <h3>Downloads</h3>
+            <div class="field">
+              <label>Default download folder</label>
+              <div class="row"><input class="input grow" data-setting="downloadDir" readonly /><button class="btn ghost" id="set-browse">Browse</button></div>
+            </div>
+            <div class="grid3">
+              <div class="field"><label>Connections per download</label><input class="input" type="number" min="1" max="32" data-setting="connections" data-type="number" /></div>
+              <div class="field"><label>Simultaneous downloads</label><input class="input" type="number" min="1" max="20" data-setting="maxConcurrent" data-type="number" /></div>
+              <div class="field"><label>Simultaneous uploads</label><input class="input" type="number" min="1" max="10" data-setting="uploadConcurrency" data-type="number" /></div>
+              <div class="field"><label>Speed limit (KB/s, 0 = unlimited)</label><input class="input" type="number" min="0" data-setting="speedLimitKBps" data-type="number" /></div>
+              <div class="field"><label>Retries per connection</label><input class="input" type="number" min="0" max="50" data-setting="maxRetries" data-type="number" /></div>
+            </div>
+            <label class="check"><input type="checkbox" data-setting="autoResume" /> Resume unfinished downloads when the app starts</label>
+          </div>
+          <div class="card form">
+            <h3>Browser integration</h3>
+            <label class="check"><input type="checkbox" data-setting="captureFromBrowser" /> Take over downloads started in the browser</label>
+            <label class="check"><input type="checkbox" data-setting="askBeforeDownload" /> Ask before adding (show the Add dialog)</label>
+            <div class="grid3">
+              <div class="field"><label>Only capture files larger than (KB)</label><input class="input" type="number" min="0" data-setting="captureMinSizeKB" data-type="number" /></div>
+              <div class="field"><label>Only these extensions (empty = all)</label><input class="input" placeholder="zip,rar,7z,mp4,iso,exe,dmg" data-setting="captureExtensions" /></div>
+              <div class="field"><label>Local bridge port</label><input class="input" type="number" min="1024" max="65535" data-setting="serverPort" data-type="number" /></div>
+            </div>
+          </div>
+          <div class="card form">
+            <h3>Application</h3>
+            <label class="check"><input type="checkbox" data-setting="minimizeToTray" /> Keep running in the tray / menu bar when the window is closed</label>
+            <label class="check"><input type="checkbox" data-setting="notify" /> Show notifications</label>
+            <label class="check"><input type="checkbox" data-setting="launchAtLogin" /> Start at login (minimised)</label>
+            <div class="grid3">
+              <div class="field">
+                <label>Theme</label>
+                <select class="input" data-setting="theme">
+                  <option value="dark">Dark</option>
+                  <option value="light">Light</option>
+                  <option value="system">System</option>
+                </select>
+              </div>
+            </div>
+            <p class="muted small" id="about-line"></p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Add download modal -->
+    <div class="modal-backdrop" id="modal-add">
+      <div class="modal">
+        <div class="modal-head">
+          <h2>Add download</h2>
+          <button class="icon-btn" data-close><span class="ico sm" data-icon="x"></span></button>
+        </div>
+        <label class="label">Links (one per line)</label>
+        <textarea class="input" id="add-urls" rows="5" placeholder="https://example.com/file.zip&#10;https://drive.google.com/file/d/…"></textarea>
+        <div class="grid2">
+          <div>
+            <label class="label">Save to</label>
+            <div class="row"><input class="input grow" id="add-dir" readonly /><button class="btn ghost" id="add-browse"><span class="ico sm" data-icon="folder"></span></button></div>
+          </div>
+          <div>
+            <label class="label">File name (optional, single link)</label>
+            <input class="input" id="add-name" placeholder="Auto" />
+          </div>
+        </div>
+        <label class="label">Connections: <b id="add-conn-val">8</b></label>
+        <input type="range" id="add-conn" min="1" max="32" value="8" />
+        <label class="check"><input type="checkbox" id="add-start" checked /> Start immediately</label>
+        <div class="form-error" id="add-error"></div>
+        <div class="modal-foot">
+          <button class="btn ghost" data-close>Cancel</button>
+          <button class="btn primary" id="add-ok"><span class="ico sm" data-icon="download"></span>Download</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toasts" id="toasts"></div>
+    <script src="icons.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
